@@ -1,6 +1,7 @@
 #####################################
 ###  Lei Tu 2013-01-09            ###
 #To fix login proble automaticly ####
+###testing###
 #!/bin/bash
 function init_root(){
      echo -e "Welcome on board! Can't login LTS?(Y/N)"
