@@ -7,9 +7,9 @@ NAGIOS_CFG_DIR=/usr/local/nagios/etc
 NRPE_CFG=$NAGIOS_CFG_DIR/nrpe.cfg
 NODE_PATH=/usr/local/nagios/etc/objects/nodes/
 
-if [ -z $2 ] ;then 
+if [ -z $2 ] ;then
   echo "I don't know which node I need to modify"
-else 
+else
   node=$2
 fi
 
@@ -17,7 +17,7 @@ NODE=${node}.cfg
 
 function file() {
   cd $NODE_PATH
-  if [ ! -e $NODE ]; then 
+  if [ ! -e $NODE ]; then
   echo "Sorry, Your node is not existing"
   fi
 }
@@ -52,7 +52,7 @@ case $1 in
    -h|help)
      echo "Usage:"
      echo "node_manage.sh add scaleworks04 ping check_ping"
-     echo "node_manage.sh rm"
+     echo "node_manage.sh rm scaleworks04 check_ping"
      ;;
    add|ADD|-a)
       file

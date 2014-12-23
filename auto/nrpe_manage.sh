@@ -15,7 +15,7 @@ COMMAND_DETAILS=`echo $COMMAND_DETAILS_All | awk '{$1=$2=""}sub("^"FS"*","")'`
 
 function list() {
   cd $NRPE_CFG_PATH
-  awk '/\[*_*\]/' nrpe.cfg  | grep -v '#' | sed -e 's/command\[//g' -e 's/\]\=//g' |awk -F/ '{print $1}'
+  awk '/\[*_*\]/' nrpe.cfg  | grep -v '#' | sed -e 's/command\[//g' -e 's/\]\=//g' | awk -F/ '{print $1}'
 }
 
 function list_all() {
@@ -40,7 +40,13 @@ function remove() {
 }
 
 case $1 in
-  list|LIST)
+  help|HELP|-h)
+    echo "nrpe_manage.sh add command_alias command details"
+    echo "nrpe_manage.sh rm command_alias"
+    echo "nrpe_manage.sh mod command_alias command details"
+    echo "nrpe_manage.sh list"
+    ;;
+  list|LIST|-l)
      list_all
   ;;
   add|ADD|-a)
@@ -49,8 +55,7 @@ case $1 in
   rm|RM|-r)
     remove
   ;;
-  *) 
+  *)
    echo "I don't know what to do"
   ;;
 esac
-  
