@@ -13,4 +13,12 @@ curl -X PUT -H "x-ms-blob-type: BlockBlob" -H "x-ms-blob-content-type: applicati
 #wget download
  wget -k "${STORAGE_SUFFIX}text.txt${SASTOKEN}" -O test.txt
  
+ 
+ 
+#Reference with azure-deploy.sh
+EXPIRY_TIEM=$(date -u -v+4H +%Y-%m-%dT%H:%M:%S%z 2>/dev/null) || EXPIRY_TIME=$(date -u --date "24 hour" --iso-8601=seconds)
+STORAGE_ACCOUNT_KEY=$(azure storage account keys list -g "$RESOURCE_GROUP" "$STORAGE_ACCOUNT" --json | jq -r '.[0].value')
+# permissions devides to rwl, here we are using rw due to we need to upload things
+SAS="?$(azure storage container sas create --container "$STORAGE_CONTAINER" --permissions rw --expiry "$EXPIRY_TIME" -a "$STORAGE_ACCOUNT" -k "$STORAGE_ACCOUNT_KEY" --json | jq -r '.sas')"
+ 
 
