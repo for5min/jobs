@@ -1,0 +1,16 @@
+# curl upload
+# This is the curl upload blob which missing in the world
+SAS=$1
+STORAGE_ACCOUNT=storageaccount
+STORAGE_CONTAINER=storagecontainer
+STORAGE_SUFFIX="https://${STORAGE_ACCOUNT}.blob.core.windows.net/${STORAGE_CONTAINER}/chef/"
+
+# Upload pem
+curl -X PUT -H "x-ms-blob-type: BlockBlob" -H "x-ms-blob-content-type: application/x-www-form-urlencoded" \
+     "${STORAGE_SUFFIX}test.txt${SAS}" --data-binary "@/root/test.txt"
+
+
+#wget download
+ wget -k "${STORAGE_SUFFIX}text.txt${SASTOKEN}" -O test.txt
+ 
+
