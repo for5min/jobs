@@ -65,4 +65,4 @@ chef-manage-ctl reconfigure --accept-license
 
 #add new user and org
 chef-server-ctl user-create admin admin admin admin@test.com 'abc123' --filename /root/admin.pem
-chef-server-ctl org-create rpsp 'rakuten payment group' --association_user admin --filename /root/rakuten-validator.pem
+chef-server-ctl org-create mytestgroup ' group' --association_user admin --filename /root/validator.pem
