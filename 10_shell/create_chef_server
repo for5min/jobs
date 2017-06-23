@@ -1,13 +1,15 @@
 #!/bin/bash
 
-#pre-request
+HOSTNAME=$( hostname -f )
+
+# pre-request
 setenforce 0
 
 sed -i "s/SELINUX=enforcing/SELINUX=permissive/g" /etc/selinux/config
 
 sed -i "s/requiretty/\!requiretty/g" /etc/sudoers
 
-#Install package
+# Install package
 
 rpm --import https://packages.chef.io/chef.asc
 
@@ -19,10 +21,10 @@ gpgcheck=1
 enabled=1
 EOL
 
-#install chef core and manage
-#Azure linux agent will kill itself
+# Install chef core and manage
+# Azure linux agent will kill itself
 yum update -y --exclude=WALinuxAgent
-yum install -y openldap chef-server-core chef-manage
+yum install -y openldap chef-server-core chef-manage git
 
 #run reconfigure
 chef-server-ctl reconfigure
@@ -36,17 +38,14 @@ chef-server-ctl reconfigure
 #curl --upload-file /etc/opscode/pivotal.pem "$1/pivotal.pem$2" --header "x-ms-blob-type: BlockBlob"
 #curl --upload-file /var/opt/opscode/upgrades/migration-level "$1/migration-level$2" --header "x-ms-blob-type: BlockBlob"
 
-
-#TO-DO download all certs or manually do?
-
-#install manage
+# Install manage
 chef-server-ctl install chef-manage
 chef-server-ctl reconfigure
 chef-manage-ctl reconfigure --accept-license
 chef-manage-ctl reconfigure
 chef-manage-ctl reconfigure --accept-license
 
-#install push job
+# Install push job
 chef-server-ctl install opscode-push-jobs-server
 chef-server-ctl reconfigure
 chef-manage-ctl reconfigure --accept-license
@@ -54,6 +53,33 @@ chef-manage-ctl reconfigure --accept-license
 opscode-push-jobs-server-ctl reconfigure
 chef-manage-ctl reconfigure --accept-license
 
-#add new user and org
-chef-server-ctl user-create admin admin admin admin@test.com 'abc123' --filename /root/admin.pem
-chef-server-ctl org-create mytestgroup 'group' --association_user admin --filename /root/validator.pem
+#
+mkdir -p /home/adminuser/.chef
+cat > /home/adminuser/.chef/knife.rb << EOF
+current_dir = File.dirname(__FILE__)
+log_level                :info
+log_location             STDOUT
+node_name                "admin"
+client_key               "#{current_dir}/admin.pem"
+chef_server_url          "https://${HOSTNAME}/organizations/mytestgroup"
+cookbook_path            ["~/cookbooks"]
+EOF
+
+chown -R adminuser:adminuser /home/adminuser/.chef
+
+# Add new user and org
+chef-server-ctl user-create admin admin admin admin@test.com 'abc123' --filename /home/adminuser/.chef/admin.pem
+chef-server-ctl org-create mytestgroup 'group' --association_user admin --filename /home/adminuser/.chef/validator.pem
+
+# Install 
+cd /tmp
+wget https://packages.chef.io/files/stable/chefdk/1.5.0/el/7/chefdk-1.5.0-1.el7.x86_64.rpm
+
+rpm -Uvh chefdk-1.5.0-1.el7.x86_64.rpm
+
+echo "PATH=/opt/chefdk/embedded/bin:$PATH" >> /etc/profile
+export PATH=/opt/chefdk/embedded/bin:$PATH
+
+su - adminuser -c "knife ssl fetch"
+su - adminuser -c "knife ssl check"
+su - adminuser -c "cd /home/adminuser/cookbooks && knife upload ."
