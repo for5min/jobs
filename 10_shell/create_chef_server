@@ -82,5 +82,6 @@ export PATH=/opt/chefdk/embedded/bin:$PATH
 
 su - adminuser -c "knife ssl fetch"
 su - adminuser -c "knife ssl check"
+su - adminuser -c "cd /home/adminuser && curl -O -s https://raw.githubusercontent.com/leitu/jobs/master/10_shell/cookbooks.tar.gz"
 su - adminuser -c "cd /home/adminuser && tar -xzvf cookbooks.tar.gz"
 su - adminuser -c "cd /home/adminuser/cookbooks && knife upload ."
