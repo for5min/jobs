@@ -53,6 +53,9 @@ chef-manage-ctl reconfigure --accept-license
 opscode-push-jobs-server-ctl reconfigure
 chef-manage-ctl reconfigure --accept-license
 
+# Generate encryption key
+openssl rand -base64 2048 | tr -d '\r\n' > /home/adminuser/encrypted_data_bag_secret
+
 #
 mkdir -p /home/adminuser/.chef
 cat > /home/adminuser/.chef/knife.rb << EOF
