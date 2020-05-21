@@ -1,0 +1,26 @@
+echo "abc def" | cut -f 2 -d ' '
+def
+$ echo "abc    def" | cut -f 2 -d ' '
+
+$ echo " abc def" | cut -f 2 -d ' '
+abc
+
+
+$ echo "abc def" | awk '{ print $2 }'
+def
+$ echo "abc    def" | awk '{ print $2 }'
+def
+$ echo " abc def" | awk '{ print $2 }'
+def
+
+
+$ last > lastloggedin
+
+$ awk '/slm/ {count++} END {print count}' lastloggedin 
+758
+
+$ grep slm lastloggedin  | wc -l
+758
+
+$ grep -c slm lastloggedin
+758
