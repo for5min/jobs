@@ -1,0 +1,19 @@
+#!/bin/bash
+
+main() {
+    echo "${USERNAME}"
+    echo "${TENANTNAME}"
+}
+
+while getopts ":n:a:" opt; do
+  case ${opt} in
+    n ) USERNAME=${OPTARG}
+      ;;
+    a ) TENANTNAME=${OPTARG}
+      ;;
+    \? ) echo "Usage: cmd [-n] [-a]"
+      ;;
+  esac
+done
+
+main
